@@ -73,14 +73,13 @@ class Products extends AbstractConnectivity implements ProductsInterface
         $query = ['level' => 1];
         if (2 === $level) {
             $query['level'] = 2;
-        }
-        if (3 === $level && $forceLevel3) {
+        } elseif (3 === $level && $forceLevel3) {
             $query['level'] = 3;
         }
 
         return $this
             ->getRequestFactory()
-            ->createRequest('GET', sprintf('/products/%s/book', $productId))
+            ->createRequest('GET', sprintf('/products/%s/book', $productId), $query)
             ->setMustBeSigned(false)
             ->send()
         ;
@@ -142,8 +141,8 @@ class Products extends AbstractConnectivity implements ProductsInterface
         $this->checkHistoricRatesParams($startTime, $endTime, $granularity);
 
         $query = [
-            'start' => $startTime->format(DateTime::ISO8601),
-            'end' => $endTime->format(DateTime::ISO8601),
+            'start' => $startTime->format(DateTimeInterface::ATOM),
+            'end' => $endTime->format(DateTimeInterface::ATOM),
             'granularity' => $granularity,
         ];
 
